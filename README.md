@@ -188,13 +188,12 @@ Review EFM32GG11 profiling screenshots
 |   |-- metrics_summary.csv
 |   |-- ProfilingBeforePruning.png
 |   |-- ProfilingAfterPruning.png
-|   |-- pruning_accuracy_trend.png       (generated when the MATLAB workflow is run)
-|   `-- layer_filter_pruning.png        (generated when the MATLAB workflow is run)
+|   |-- pruning_accuracy_trend.png      
+|   `-- layer_filter_pruning.png        
 |-- docs/
 |   |-- methodology.md
 |   |-- profiling_notes.md
 |   |-- diagnostic_state_machine_concept.md
-|   `-- original_README.md
 `-- models/
     `-- README.md
 ```
