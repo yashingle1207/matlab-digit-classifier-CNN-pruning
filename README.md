@@ -4,11 +4,6 @@ Maintained by: Yash Daniel Ingle
 
 The project focuses on optimizing a digit-classification CNN in MATLAB for MCU deployment on the EFM32GG11 platform. The workflow combines baseline CNN training, structured pruning, post-training quantization, and embedded profiling to study the tradeoff between validation accuracy, model size, Flash/RAM usage, and energy per inference.
 
-## Overview
-
-The CNN is designed for 28x28 grayscale digit images. The baseline model is trained in MATLAB using SGDM, then optimized with L1-norm structured pruning to remove redundant channels. After pruning, the workflow applies 8-bit post-training quantization using MATLAB `dlquantizer` with calibration and validation data.
-
-The embedded validation context uses the EFM32GG11 MCU platform with Simplicity Studio and Commander Tool profiling. The project compares Flash usage, RAM usage, and energy consumption before and after optimization.
 
 ## Why This Project Matters
 
@@ -84,37 +79,12 @@ Review EFM32GG11 profiling screenshots
     - Flash/RAM profiling and energy profiling
     - Embedded ML, model optimization, and resource-constrained systems
 
-## Methodology
-
-The MATLAB workflow in `src/` follows the original coursework optimization pipeline:
-
-    1. Build and train a 3-layer CNN for 28x28 grayscale digit classification.
-    2. Train the baseline network using SGDM.
-    3. Evaluate baseline accuracy using prediction and validation-label comparison.
-    4. Identify convolution, batch normalization, and fully connected layers.
-    5. Compute filter importance using L1 norm.
-    6. Apply structured pruning to remove redundant convolution channels.
-    7. Update Conv2D and BatchNorm layers during pruning.
-    8. Adjust downstream Conv2D input channels after filters are removed.
-    9. Reinitialize or update the fully connected layer as required by the pruning workflow.
-    10. Retrain the pruned network and evaluate accuracy after each pruning iteration.
-    11. Run post-training 8-bit quantization using MATLAB `dlquantizer`.
-    12. Calibrate and validate the quantized model using calibration and validation data.
-    13. Save generated model and quantization artifacts locally under `models/`.
-
-Generated `.mat` artifacts are kept out of version control to keep the repository lightweight. See `models/README.md` for the model artifact convention.
-
-## Key Functions
-
-| Function or API | Role |
-| --- | --- |
-| `trainDigitDataNetwork(imdsTrain, imdsValidation)` | Trains the baseline CNN using SGDM and saves `digitsNet.mat`. |
-| `computeL1Pruning(weights, prune_ratio)` | Computes L1-norm filter importance for pruning. |
-| `pruneNetwork(net, convIndices, bnIndices, fcIndex, pruneFilters)` | Updates Conv2D, BatchNorm, downstream layer connections, and fully connected layer handling after pruning. |
-| `evaluateAccuracy(dlnet, mbq, classes, trueLabels)` | Compares predictions with validation labels to measure accuracy. |
-| `dlquantizer`, `calibrate`, `validate` | Perform post-training quantization and validation. |
-
 ## Overview
+
+The CNN is designed for 28x28 grayscale digit images. The baseline model is trained in MATLAB using SGDM, then optimized with L1-norm structured pruning to remove redundant channels. After pruning, the workflow applies 8-bit post-training quantization using MATLAB `dlquantizer` with calibration and validation data.
+
+The embedded validation context uses the EFM32GG11 MCU platform with Simplicity Studio and Commander Tool profiling. The project compares Flash usage, RAM usage, and energy consumption before and after optimization.
+
 
 ### Task
 
@@ -125,6 +95,15 @@ Develop and optimize a CNN for digit classification using MATLAB. Post-training,
 - **Deployment to EFM32GG11**, followed by energy profiling via **Simplicity Studio's Commander Tool**
 
 
+## Key Functions
+
+| Function or API | Role |
+| --- | --- |
+| `trainDigitDataNetwork(imdsTrain, imdsValidation)` | Trains the baseline CNN using SGDM and saves `digitsNet.mat`. |
+| `computeL1Pruning(weights, prune_ratio)` | Computes L1-norm filter importance for pruning. |
+| `pruneNetwork(net, convIndices, bnIndices, fcIndex, pruneFilters)` | Updates Conv2D, BatchNorm, downstream layer connections, and fully connected layer handling after pruning. |
+| `evaluateAccuracy(dlnet, mbq, classes, trueLabels)` | Compares predictions with validation labels to measure accuracy. |
+| `dlquantizer`, `calibrate`, `validate` | Perform post-training quantization and validation. |
 
 ## Functions and Their Role
 
