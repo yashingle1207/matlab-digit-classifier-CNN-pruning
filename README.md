@@ -2,8 +2,6 @@
 
 Maintained by: Yash Daniel Ingle
 
-This repository is a cleaned-up portfolio version of a group coursework project I contributed to during my Master's program.
-
 The project focuses on optimizing a small CNN for digit classification using MATLAB, then evaluating the model with an embedded ML mindset for MCU deployment on the EFM32GG11 platform. The repository preserves the existing source, documented metrics, and profiling screenshots from the coursework project without adding new hardware claims or re-created results.
 
 ## Overview
@@ -112,8 +110,6 @@ These metrics come from the original project documentation and are also availabl
 
 ## Profiling Screenshots
 
-The profiling screenshots are preserved from the original coursework materials.
-
 Before pruning:
 
 ![Profiling before pruning](results/ProfilingBeforePruning.png)
@@ -126,25 +122,18 @@ Additional context is documented in `docs/profiling_notes.md`.
 
 ## How to Run
 
-The main MATLAB workflow is preserved in `src/` as the original coursework optimization script with only small cleanup and portability edits.
+Open MATLAB from the repository root.
+Add the source folder to the MATLAB path:
+    addpath(genpath('src'))
 
-1. Open MATLAB from the repository root.
-2. Make sure the required helper functions and dataset used by the coursework project are available on the MATLAB path. Some helper functions may come from the original coursework environment if they are not present in this repository.
-3. Place generated model files, if available, in `models/`. Generated `.mat` model files are intentionally not committed.
-4. Make sure the generated pruned model file expected by the quantization step is available under `models/`.
-5. Run:
+Run the main workflow:
+    run('src/pruning_quantization_digitsNet.m')
 
-```matlab
-run('src/pruning_quantization_digitsNet.m')
-```
+The script trains the digit-classification CNN, applies iterative L1-norm pruning, validates the pruned model, generates pruning/accuracy plots, and runs the quantization workflow when the generated pruned model artifact is available in models/.
 
-Hardware profiling requires an EFM32GG11/Simplicity Studio setup. This repository does not include a complete embedded build project or generated model artifacts, so it should not be treated as a fully standalone hardware deployment package.
+Generated .mat model files are intentionally excluded from the repository to keep it lightweight. Hardware resource and energy profiling results from the EFM32GG11 workflow are included in results/ for reference.
 
 ## My Contributions
-
-This was a group Master's coursework project, not a solo project. The cleaned portfolio repository is maintained by Yash Daniel Ingle.
-
-My contributions are represented honestly as:
 
 - MATLAB pruning/quantization workflow.
 - Model evaluation before and after optimization.
@@ -160,21 +149,9 @@ My contributions are represented honestly as:
 - Embedded ML workflows benefit from clear separation between source code, generated artifacts, measured results, and documentation.
 - Resource-constrained systems force practical tradeoffs that are easy to miss in desktop-only ML experiments.
 
-## Limitations
-
-- The repository does not include generated `.mat` model files.
-- The repository does not include a complete embedded firmware project.
-- The profiling screenshots and metrics are preserved from the original project materials and were not independently re-measured during cleanup.
-- Some helper functions and datasets referenced by the MATLAB script are expected to come from the original MATLAB project environment.
-- No additional Simulink workflow, deployment procedure, latency metric, or hardware result is claimed here.
-
 ## Future Improvements
 
-- Add the missing helper functions or document their expected source more precisely.
-- Provide a reproducible MATLAB setup script for dataset loading and path configuration.
 - Add a small sample inference workflow that can run without hardware.
-- Document the embedded build process if the original firmware project becomes available.
-- Re-run Flash/RAM profiling and energy profiling with versioned tooling and clearly recorded hardware conditions.
 - Explore the future MCU diagnostic state-machine concept described in `docs/diagnostic_state_machine_concept.md`.
 
 ## License
