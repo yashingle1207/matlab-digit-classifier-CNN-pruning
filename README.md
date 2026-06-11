@@ -9,75 +9,6 @@ The project focuses on optimizing a digit-classification CNN in MATLAB for MCU d
 
 Embedded ML is not only about getting a model to run. It is about making the model fit within real hardware limits: memory, storage, energy, and deployment tooling. This project connects CNN optimization in MATLAB with hardware-aware validation for an MCU-class target.
 
-## System Workflow
-
-```text
-28x28 grayscale digit images
-    |
-    v
-Train baseline CNN in MATLAB using SGDM
-    |
-    v
-Evaluate baseline accuracy
-    |
-    v
-Compute L1-norm filter importance
-    |
-    v
-Apply structured pruning to redundant channels
-    |
-    v
-Retrain and evaluate pruned model
-    |
-    v
-Run post-training 8-bit quantization
-    |
-    v
-Validate quantized model
-    |
-    v
-Compare accuracy, model size, Flash, RAM, and energy
-    |
-    v
-Review EFM32GG11 profiling screenshots
-```
-
-## Repository Structure
-
-```text
-.
-|-- README.md
-|-- LICENSE
-|-- requirements.md
-|-- src/
-|   `-- pruning_quantization_digitsNet.m
-|-- results/
-|   |-- README.md
-|   |-- metrics_summary.csv
-|   |-- ProfilingBeforePruning.png
-|   |-- ProfilingAfterPruning.png
-|   |-- pruning_accuracy_trend.png       (generated when the MATLAB workflow is run)
-|   `-- layer_filter_pruning.png        (generated when the MATLAB workflow is run)
-|-- docs/
-|   |-- methodology.md
-|   |-- profiling_notes.md
-|   |-- diagnostic_state_machine_concept.md
-|   `-- original_README.md
-`-- models/
-    `-- README.md
-```
-
-## Tools and Technologies
-
-    - MATLAB
-    - MATLAB Deep Learning Toolbox workflows
-    - SGDM-based CNN training
-    - L1-norm structured pruning
-    - `dlquantizer`, `calibrate`, and `validate` for post-training quantization
-    - EFM32GG11 MCU deployment context
-    - Simplicity Studio and Commander Tool profiling context
-    - Flash/RAM profiling and energy profiling
-    - Embedded ML, model optimization, and resource-constrained systems
 
 ## Overview
 
@@ -209,6 +140,75 @@ run('src/pruning_quantization_digitsNet.m')
 - Documentation and profiling comparison.
 - Cleanup for portfolio use.
 
+## System Workflow
+
+```text
+28x28 grayscale digit images
+    |
+    v
+Train baseline CNN in MATLAB using SGDM
+    |
+    v
+Evaluate baseline accuracy
+    |
+    v
+Compute L1-norm filter importance
+    |
+    v
+Apply structured pruning to redundant channels
+    |
+    v
+Retrain and evaluate pruned model
+    |
+    v
+Run post-training 8-bit quantization
+    |
+    v
+Validate quantized model
+    |
+    v
+Compare accuracy, model size, Flash, RAM, and energy
+    |
+    v
+Review EFM32GG11 profiling screenshots
+```
+
+## Repository Structure
+
+```text
+.
+|-- README.md
+|-- LICENSE
+|-- requirements.md
+|-- src/
+|   `-- pruning_quantization_digitsNet.m
+|-- results/
+|   |-- README.md
+|   |-- metrics_summary.csv
+|   |-- ProfilingBeforePruning.png
+|   |-- ProfilingAfterPruning.png
+|   |-- pruning_accuracy_trend.png       (generated when the MATLAB workflow is run)
+|   `-- layer_filter_pruning.png        (generated when the MATLAB workflow is run)
+|-- docs/
+|   |-- methodology.md
+|   |-- profiling_notes.md
+|   |-- diagnostic_state_machine_concept.md
+|   `-- original_README.md
+`-- models/
+    `-- README.md
+```
+
+## Tools and Technologies
+
+    - MATLAB
+    - MATLAB Deep Learning Toolbox workflows
+    - SGDM-based CNN training
+    - L1-norm structured pruning
+    - `dlquantizer`, `calibrate`, and `validate` for post-training quantization
+    - EFM32GG11 MCU deployment context
+    - Simplicity Studio and Commander Tool profiling context
+    - Flash/RAM profiling and energy profiling
+    - Embedded ML, model optimization, and resource-constrained systems
 
 ## Summary
 Successfully trained, pruned, quantized, and deployed a CNN on EFM32GG11 using MATLAB. Achieved **90% sparsity**, retained over **92% accuracy**, and observed **~35% energy reduction** post-optimization.
