@@ -2,42 +2,50 @@
 
 Maintained by: Yash Daniel Ingle
 
-The project focuses on optimizing a small CNN for digit classification using MATLAB, then evaluating the model with an embedded ML mindset for MCU deployment on the EFM32GG11 platform. The repository preserves the existing source, documented metrics, and profiling screenshots from the coursework project without adding new hardware claims or re-created results.
+This repository is a cleaned-up portfolio version of a group coursework project I contributed to during my Master's program.
+
+The project focuses on optimizing a digit-classification CNN in MATLAB for MCU deployment on the EFM32GG11 platform. The workflow combines baseline CNN training, structured pruning, post-training quantization, and embedded profiling to study the tradeoff between validation accuracy, model size, Flash/RAM usage, and energy per inference.
 
 ## Overview
 
-The work explores how a neural network can be made more suitable for resource-constrained systems through model optimization techniques such as pruning and quantization. The MATLAB workflow trains a digit-classification CNN, applies structured pruning, performs post-training quantization, and compares the documented effects on accuracy, model size, Flash/RAM usage, and energy per image.
+The CNN is designed for 28x28 grayscale digit images. The baseline model is trained in MATLAB using SGDM, then optimized with L1-norm structured pruning to remove redundant channels. After pruning, the workflow applies 8-bit post-training quantization using MATLAB `dlquantizer` with calibration and validation data.
 
-The embedded validation context is EFM32GG11 MCU deployment, with profiling artifacts showing before/after resource measurements from the original project materials.
+The embedded validation context uses the EFM32GG11 MCU platform with Simplicity Studio and Commander Tool profiling. The project compares Flash usage, RAM usage, and energy consumption before and after optimization.
 
 ## Why This Project Matters
 
-Embedded ML is not only about getting a model to run. It is about making the model fit within real hardware limits: memory, storage, energy, and deployment tooling. This project was useful because it connected CNN optimization in MATLAB with hardware-aware validation for an MCU-class target.
+Embedded ML is not only about getting a model to run. It is about making the model fit within real hardware limits: memory, storage, energy, and deployment tooling. This project connects CNN optimization in MATLAB with hardware-aware validation for an MCU-class target.
 
-The coursework helped demonstrate the tradeoff between model accuracy and embedded constraints, especially where Flash/RAM profiling and energy profiling matter as much as validation accuracy.
+The coursework demonstrates the practical tradeoff between model accuracy and embedded constraints, especially where Flash/RAM profiling and energy profiling matter as much as validation accuracy.
 
 ## System Workflow
 
 ```text
-Digit dataset
+28x28 grayscale digit images
     |
     v
-Train CNN in MATLAB
+Train baseline CNN in MATLAB using SGDM
     |
     v
 Evaluate baseline accuracy
     |
     v
-Apply L1-norm structured pruning
+Compute L1-norm filter importance
+    |
+    v
+Apply structured pruning to redundant channels
     |
     v
 Retrain and evaluate pruned model
     |
     v
-Apply post-training quantization
+Run post-training 8-bit quantization
     |
     v
-Collect documented model/resource metrics
+Validate quantized model
+    |
+    v
+Compare accuracy, model size, Flash, RAM, and energy
     |
     v
 Review EFM32GG11 profiling screenshots
@@ -72,32 +80,47 @@ Review EFM32GG11 profiling screenshots
 
 - MATLAB
 - MATLAB Deep Learning Toolbox workflows
-- `dlquantizer` and post-training quantization APIs
-- CNN pruning and model optimization
+- SGDM-based CNN training
+- L1-norm structured pruning
+- `dlquantizer`, `calibrate`, and `validate` for post-training quantization
 - EFM32GG11 MCU deployment context
-- Simplicity Studio / Commander tooling as documented in the original project notes
+- Simplicity Studio and Commander Tool profiling context
 - Flash/RAM profiling and energy profiling
-- Technical documentation for embedded ML and resource-constrained systems
+- Embedded ML, model optimization, and resource-constrained systems
 
 ## Methodology
 
-The MATLAB script in `src/` follows the original coursework workflow:
+The MATLAB workflow in `src/` follows the original coursework optimization pipeline:
 
-1. Load the digit dataset and train a CNN baseline.
-2. Evaluate the original network accuracy.
-3. Identify convolution, batch normalization, and fully connected layers.
-4. Apply iterative L1-norm structured pruning to remove lower-importance filters.
-5. Retrain after pruning iterations and track validation accuracy.
-6. Quantize the pruned model using MATLAB quantization tooling.
-7. Save generated model and quantization artifacts locally under `models/`.
+1. Build and train a 3-layer CNN for 28x28 grayscale digit classification.
+2. Train the baseline network using SGDM.
+3. Evaluate baseline accuracy using prediction and validation-label comparison.
+4. Identify convolution, batch normalization, and fully connected layers.
+5. Compute filter importance using L1 norm.
+6. Apply structured pruning to remove redundant convolution channels.
+7. Update Conv2D and BatchNorm layers during pruning.
+8. Adjust downstream Conv2D input channels after filters are removed.
+9. Reinitialize or update the fully connected layer as required by the pruning workflow.
+10. Retrain the pruned network and evaluate accuracy after each pruning iteration.
+11. Run post-training 8-bit quantization using MATLAB `dlquantizer`.
+12. Calibrate and validate the quantized model using calibration and validation data.
+13. Save generated model and quantization artifacts locally under `models/`.
 
-Generated `.mat` files are not committed to the repository. See `models/README.md` for details.
+Generated `.mat` artifacts are kept out of version control to keep the repository lightweight. See `models/README.md` for the model artifact convention.
 
-For more detail, see `docs/methodology.md`.
+## Key Functions
+
+| Function or API | Role |
+| --- | --- |
+| `trainDigitDataNetwork(imdsTrain, imdsValidation)` | Trains the baseline CNN using SGDM and saves `digitsNet.mat`. |
+| `computeL1Pruning(weights, prune_ratio)` | Computes L1-norm filter importance for pruning. |
+| `pruneNetwork(net, convIndices, bnIndices, fcIndex, pruneFilters)` | Updates Conv2D, BatchNorm, downstream layer connections, and fully connected layer handling after pruning. |
+| `evaluateAccuracy(dlnet, mbq, classes, trueLabels)` | Compares predictions with validation labels to measure accuracy. |
+| `dlquantizer`, `calibrate`, `validate` | Perform post-training quantization and validation. |
 
 ## Results
 
-These metrics come from the original project documentation and are also available in `results/metrics_summary.csv`. They were not re-measured during repository cleanup.
+The results show the embedded tradeoff targeted by the project: pruning and quantization reduced model size, Flash usage, RAM usage, and energy per inference while retaining over 92% validation accuracy.
 
 | Metric | Before Optimization | After Pruning + Quantization |
 | --- | ---: | ---: |
@@ -105,35 +128,38 @@ These metrics come from the original project documentation and are also availabl
 | Model size | 27.5 KB | 18.3 KB |
 | Flash usage | 23.4 KB | 16.2 KB |
 | RAM usage | 7.2 KB | 4.9 KB |
-| Energy per image | 7.43 uJ | 4.91 uJ |
-| Sparsity achieved | Not recorded | 90% |
+| Energy per image | 7.43 µJ | 4.91 µJ |
+| Sparsity achieved | 0% | 90% |
+
+The energy per inference decreased from 7.43 µJ to 4.91 µJ, while the optimized model retained 92.1% validation accuracy.
 
 ## Profiling Screenshots
 
-Before pruning:
+Flash/RAM usage and energy consumption were compared before and after optimization in the EFM32GG11 / Simplicity Studio / Commander Tool profiling context.
+
+Before pruning and quantization:
 
 ![Profiling before pruning](results/ProfilingBeforePruning.png)
 
-After pruning:
+After pruning and quantization:
 
 ![Profiling after pruning](results/ProfilingAfterPruning.png)
 
-Additional context is documented in `docs/profiling_notes.md`.
-
 ## How to Run
 
-Open MATLAB from the repository root.
-Add the source folder to the MATLAB path:
-    addpath(genpath('src'))
+1. Open MATLAB from the repository root.
+2. Add `src` to the MATLAB path.
+3. Run the main workflow:
 
-Run the main workflow:
-    run('src/pruning_quantization_digitsNet.m')
+```matlab
+run('src/pruning_quantization_digitsNet.m')
+```
 
-The script trains the digit-classification CNN, applies iterative L1-norm pruning, validates the pruned model, generates pruning/accuracy plots, and runs the quantization workflow when the generated pruned model artifact is available in models/.
-
-Generated .mat model files are intentionally excluded from the repository to keep it lightweight. Hardware resource and energy profiling results from the EFM32GG11 workflow are included in results/ for reference.
+Generated `.mat` artifacts are kept out of version control to keep the repository lightweight. Model artifacts produced during local runs should be stored under `models/`.
 
 ## My Contributions
+
+This was a group Master's coursework project, not a solo project. My contributions included:
 
 - MATLAB pruning/quantization workflow.
 - Model evaluation before and after optimization.
@@ -144,14 +170,18 @@ Generated .mat model files are intentionally excluded from the repository to kee
 ## Engineering Takeaways
 
 - Model optimization for MCU deployment requires more than accuracy tracking.
-- Pruning and quantization can reduce memory and storage requirements, but they must be checked against validation accuracy.
+- Structured pruning helps reduce redundant channels in a way that is easier to map to embedded inference workflows.
+- Quantization depends on representative calibration and validation data.
 - Flash/RAM profiling and energy profiling are important parts of hardware-aware validation.
 - Embedded ML workflows benefit from clear separation between source code, generated artifacts, measured results, and documentation.
 - Resource-constrained systems force practical tradeoffs that are easy to miss in desktop-only ML experiments.
 
 ## Future Improvements
 
-- Add a small sample inference workflow that can run without hardware.
+- Add a reproducible MATLAB setup script for dataset loading and path configuration.
+- Add a sample inference workflow that can run without hardware.
+- Expand embedded build documentation around the EFM32GG11 workflow.
+- Re-run Flash/RAM profiling and energy profiling with versioned tooling and recorded hardware conditions.
 - Explore the future MCU diagnostic state-machine concept described in `docs/diagnostic_state_machine_concept.md`.
 
 ## License
