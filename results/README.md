@@ -12,4 +12,4 @@ This folder stores documented project results and generated visualization output
 
 ## Notes
 
-The profiling metrics are documented project results. They may vary with MATLAB version, toolchain version, dataset split, calibration data, compiler/build settings, and the exact EFM32GG11/Simplicity Studio setup used for profiling.
+The profiling metrics results may vary with MATLAB version, toolchain version, dataset split, calibration data, compiler/build settings, and the exact EFM32GG11/Simplicity Studio setup used for profiling.
