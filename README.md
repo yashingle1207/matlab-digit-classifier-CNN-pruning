@@ -114,6 +114,69 @@ Generated `.mat` artifacts are kept out of version control to keep the repositor
 | `evaluateAccuracy(dlnet, mbq, classes, trueLabels)` | Compares predictions with validation labels to measure accuracy. |
 | `dlquantizer`, `calibrate`, `validate` | Perform post-training quantization and validation. |
 
+## Overview
+
+### Task
+
+Develop and optimize a CNN for digit classification using MATLAB. Post-training, the model undergoes:
+
+- **Structured pruning** using **L1 norm** to eliminate redundant channels
+- **8-bit quantization** using `dlquantizer` and calibration datasets
+- **Deployment to EFM32GG11**, followed by energy profiling via **Simplicity Studio's Commander Tool**
+
+
+
+## Functions and Their Role
+
+### 1. Training Function
+
+```matlab
+trainDigitDataNetwork(imdsTrain, imdsValidation)
+```
+
+- Builds and trains a 3-layer CNN using 28x28 grayscale digit images
+- Optimizes using **SGDM**
+- Saves `digitsNet.mat` for future use
+
+### 2. L1-Norm Based Pruning
+
+```matlab
+computeL1Pruning(weights, prune_ratio)
+```
+
+- Computes filter importance using **L1 norm**
+- Retains only top-N filters per conv layer
+- Updates **Conv2D + BatchNorm** layers accordingly
+
+```matlab
+pruneNetwork(net, convIndices, bnIndices, fcIndex, pruneFilters)
+```
+
+- Updates convolutional and batch norm layers
+- Adjusts downstream Conv2D input channels
+- Reinitializes **fully connected layer** using Glorot initializer
+
+### 3. Accuracy Evaluation
+
+```matlab
+evaluateAccuracy(dlnet, mbq, classes, trueLabels)
+```
+
+- Uses `predict()` + `onehotdecode()` to compute classification accuracy
+- Compares model performance before and after each pruning iteration
+
+### 4. Quantization Pipeline
+
+```matlab
+quantObj = dlquantizer(net, 'ExecutionEnvironment', 'GPU');
+calibrate(quantObj, calibrationData)
+validate(quantObj, validationData)
+```
+
+- Post-pruning quantization to **8-bit**
+- Accuracy drop < 2% after quantization (retained >92%)
+- Validation accuracy printed + saved
+
 ## Results
 
 The results show the embedded tradeoff targeted by the project: pruning and quantization reduced model size, Flash usage, RAM usage, and energy per inference while retaining over 92% validation accuracy.
@@ -141,6 +204,13 @@ After pruning and quantization:
 
 ![Profiling after pruning](results/ProfilingAfterPruning.png)
 
+## Key Learnings
+
+- **Structured pruning** can reduce parameter count by 90% without major accuracy loss.
+- **Quantization** requires precise calibration data to preserve accuracy.
+- **Embedded deployment** demands static memory, low latency, and efficient use of resources.
+- **Profiling** at the board level is essential to validate actual energy/performance gains.
+
 ## How to Run
 
 1. Open MATLAB from the repository root.
@@ -160,14 +230,9 @@ run('src/pruning_quantization_digitsNet.m')
 - Documentation and profiling comparison.
 - Cleanup for portfolio use.
 
-## Engineering Takeaways
 
-- Model optimization for MCU deployment requires more than accuracy tracking.
-- Structured pruning helps reduce redundant channels in a way that is easier to map to embedded inference workflows.
-- Quantization depends on representative calibration and validation data.
-- Flash/RAM profiling and energy profiling are important parts of hardware-aware validation.
-- Embedded ML workflows benefit from clear separation between source code, generated artifacts, measured results, and documentation.
-- Resource-constrained systems force practical tradeoffs that are easy to miss in desktop-only ML experiments.
+## Summary
+Successfully trained, pruned, quantized, and deployed a CNN on EFM32GG11 using MATLAB. Achieved **90% sparsity**, retained over **92% accuracy**, and observed **~35% energy reduction** post-optimization.
 
 ## Future Improvements
 
