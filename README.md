@@ -36,6 +36,7 @@ Develop and optimize a CNN for digit classification using MATLAB. Post-training,
 | `evaluateAccuracy(dlnet, mbq, classes, trueLabels)` | Compares predictions with validation labels to measure accuracy. |
 | `dlquantizer`, `calibrate`, `validate` | Perform post-training quantization and validation. |
 
+
 ## Functions and Their Role
 
 ### 1. Training Function
