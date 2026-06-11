@@ -1,12 +1,11 @@
 # Methodology
 
-This document explains the technical workflow represented by the MATLAB source and original project notes. It is written as supporting documentation for the cleaned-up portfolio repository, not as a new measurement report.
+This document explains the technical workflow represented by the MATLAB. 
 
 ## CNN Training Setup
 
 The project uses MATLAB to train a small convolutional neural network for digit classification. The script loads a digit dataset, separates training and validation data, trains a baseline CNN, and evaluates validation accuracy before optimization.
 
-The workflow depends on helper functions from the original coursework environment, including dataset loading, mini-batch preprocessing, model training, and accuracy evaluation utilities. Those helper functions are referenced by the script but are not all present in this cleaned repository.
 
 ## L1-Norm Structured Pruning
 
@@ -27,7 +26,7 @@ For resource-constrained systems, this can translate into:
 - Reduced computation in convolution layers.
 - A model structure that is easier to map to embedded inference code.
 
-The exact benefit depends on the deployment stack, generated code, compiler behavior, and target hardware. This repository preserves documented results from the coursework project rather than claiming a newly reproduced deployment benchmark.
+The exact benefit depends on the deployment stack, generated code, compiler behavior, and target hardware. 
 
 ## Quantization Workflow
 
@@ -37,9 +36,7 @@ Quantization is important for embedded ML because 8-bit weights and activations 
 
 ## Validation Approach
 
-The documented validation approach compares the model before and after optimization using validation accuracy. The original project notes also include model size, Flash usage, RAM usage, and energy per image as embedded validation metrics.
-
-The repository keeps these metrics in `results/metrics_summary.csv`. They should be read as documented coursework results, not as newly re-run measurements from this cleanup.
+The documented validation approach compares the model before and after optimization using validation accuracy.
 
 ## Flash/RAM/Energy/Accuracy Tradeoffs
 
