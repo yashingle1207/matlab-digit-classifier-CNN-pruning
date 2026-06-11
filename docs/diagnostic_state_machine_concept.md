@@ -1,8 +1,7 @@
 # Diagnostic State Machine Concept
 
-This document describes a possible future MCU diagnostic flow for an embedded ML application. It is a concept document only.
+This document describes a possible future MCU diagnostic flow for an embedded ML application. 
 
-It is not completed work, not an implemented firmware feature, and not a completed Simulink model. It is included as a future extension idea for how an optimized CNN deployment could be wrapped in a safer embedded runtime flow.
 
 ## Concept Flow
 
@@ -58,13 +57,3 @@ Report the classification result, confidence category, resource status, or diagn
 
 Enter a conservative fallback state if model loading fails, memory checks fail, confidence remains too low, or the system detects an unsafe runtime condition.
 
-## Future Work Needed
-
-To turn this concept into completed work, the project would need:
-
-- Actual embedded firmware implementation.
-- Defined confidence thresholds.
-- Error-handling behavior for each transition.
-- Hardware-specific memory and timing checks.
-- A test plan for normal and fault-state behavior.
-- Optional Simulink modeling only if a real model-based design workflow is added later.
