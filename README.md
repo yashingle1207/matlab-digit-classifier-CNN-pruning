@@ -2,8 +2,6 @@
 
 Maintained by: Yash Daniel Ingle
 
-This repository is a cleaned-up portfolio version of a group coursework project I contributed to during my Master's program.
-
 The project focuses on optimizing a digit-classification CNN in MATLAB for MCU deployment on the EFM32GG11 platform. The workflow combines baseline CNN training, structured pruning, post-training quantization, and embedded profiling to study the tradeoff between validation accuracy, model size, Flash/RAM usage, and energy per inference.
 
 ## Overview
@@ -15,8 +13,6 @@ The embedded validation context uses the EFM32GG11 MCU platform with Simplicity 
 ## Why This Project Matters
 
 Embedded ML is not only about getting a model to run. It is about making the model fit within real hardware limits: memory, storage, energy, and deployment tooling. This project connects CNN optimization in MATLAB with hardware-aware validation for an MCU-class target.
-
-The coursework demonstrates the practical tradeoff between model accuracy and embedded constraints, especially where Flash/RAM profiling and energy profiling matter as much as validation accuracy.
 
 ## System Workflow
 
@@ -78,33 +74,33 @@ Review EFM32GG11 profiling screenshots
 
 ## Tools and Technologies
 
-- MATLAB
-- MATLAB Deep Learning Toolbox workflows
-- SGDM-based CNN training
-- L1-norm structured pruning
-- `dlquantizer`, `calibrate`, and `validate` for post-training quantization
-- EFM32GG11 MCU deployment context
-- Simplicity Studio and Commander Tool profiling context
-- Flash/RAM profiling and energy profiling
-- Embedded ML, model optimization, and resource-constrained systems
+    - MATLAB
+    - MATLAB Deep Learning Toolbox workflows
+    - SGDM-based CNN training
+    - L1-norm structured pruning
+    - `dlquantizer`, `calibrate`, and `validate` for post-training quantization
+    - EFM32GG11 MCU deployment context
+    - Simplicity Studio and Commander Tool profiling context
+    - Flash/RAM profiling and energy profiling
+    - Embedded ML, model optimization, and resource-constrained systems
 
 ## Methodology
 
 The MATLAB workflow in `src/` follows the original coursework optimization pipeline:
 
-1. Build and train a 3-layer CNN for 28x28 grayscale digit classification.
-2. Train the baseline network using SGDM.
-3. Evaluate baseline accuracy using prediction and validation-label comparison.
-4. Identify convolution, batch normalization, and fully connected layers.
-5. Compute filter importance using L1 norm.
-6. Apply structured pruning to remove redundant convolution channels.
-7. Update Conv2D and BatchNorm layers during pruning.
-8. Adjust downstream Conv2D input channels after filters are removed.
-9. Reinitialize or update the fully connected layer as required by the pruning workflow.
-10. Retrain the pruned network and evaluate accuracy after each pruning iteration.
-11. Run post-training 8-bit quantization using MATLAB `dlquantizer`.
-12. Calibrate and validate the quantized model using calibration and validation data.
-13. Save generated model and quantization artifacts locally under `models/`.
+    1. Build and train a 3-layer CNN for 28x28 grayscale digit classification.
+    2. Train the baseline network using SGDM.
+    3. Evaluate baseline accuracy using prediction and validation-label comparison.
+    4. Identify convolution, batch normalization, and fully connected layers.
+    5. Compute filter importance using L1 norm.
+    6. Apply structured pruning to remove redundant convolution channels.
+    7. Update Conv2D and BatchNorm layers during pruning.
+    8. Adjust downstream Conv2D input channels after filters are removed.
+    9. Reinitialize or update the fully connected layer as required by the pruning workflow.
+    10. Retrain the pruned network and evaluate accuracy after each pruning iteration.
+    11. Run post-training 8-bit quantization using MATLAB `dlquantizer`.
+    12. Calibrate and validate the quantized model using calibration and validation data.
+    13. Save generated model and quantization artifacts locally under `models/`.
 
 Generated `.mat` artifacts are kept out of version control to keep the repository lightweight. See `models/README.md` for the model artifact convention.
 
@@ -155,11 +151,8 @@ After pruning and quantization:
 run('src/pruning_quantization_digitsNet.m')
 ```
 
-Generated `.mat` artifacts are kept out of version control to keep the repository lightweight. Model artifacts produced during local runs should be stored under `models/`.
 
 ## My Contributions
-
-This was a group Master's coursework project, not a solo project. My contributions included:
 
 - MATLAB pruning/quantization workflow.
 - Model evaluation before and after optimization.
