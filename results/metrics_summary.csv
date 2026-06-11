@@ -1,0 +1,7 @@
+metric,before_optimization,after_pruning_quantization,unit,source_note
+Validation Accuracy,97.5,92.1,percent,Documented in original README optimization table
+Model Size,27.5,18.3,KB,Documented in original README optimization table
+Flash Usage,23.4,16.2,KB,Documented in original README optimization table
+RAM Usage,7.2,4.9,KB,Documented in original README optimization table
+Energy per image,7.43,4.91,uJ/image,Documented in original README optimization table
+Sparsity Achieved,,90,percent,Documented as achieved sparsity in original README summary
